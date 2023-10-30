@@ -1,0 +1,46 @@
+logging:
+    level:
+        br:
+            com: DEBUG
+queue1:
+    name: pedidos
+queue2:
+    name: pagamentos_pendentes
+queue3:
+    name: pagamentos_confirmados
+queue4:
+    name: entregas_confirmadas
+
+server:
+    port: 8083
+spring:
+    application:
+        name: Entrega Service
+    datasource:
+        driverClassName: org.h2.Driver
+        url: jdbc:h2:file:D:/_dev_ssd/databases_demo/entregaDB;mode=PostgreSQL;AUTO_SERVER=TRUE
+        username: ola
+        password: mundo
+    h2:
+        console:
+            enabled: true
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        defer-datasource-initialization: true
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+springdoc:
+    swagger-ui:
+        path: /doc
+cloud:
+    aws:
+        stack:
+            auto: false
+        region:
+            static: us-east-1
+        credentials:
+            access-key: 123
+            secret-key: 123
+        end-point:
+            uri: http://localhost:4566

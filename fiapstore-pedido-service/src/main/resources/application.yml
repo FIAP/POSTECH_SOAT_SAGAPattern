@@ -1,0 +1,42 @@
+logging:
+    level:
+        br:
+            com: DEBUG
+queue1:
+    name: pedidos
+queue2:
+    name: pagamentos_pendentes
+queue3:
+    name: pagamentos_confirmados
+queue4:
+    name: entregas_confirmadas
+server:
+    port: 8081
+spring:
+    application:
+        name: Pedido Service
+    datasource:
+        driverClassName: org.h2.Driver
+        password: mundo
+        url: jdbc:h2:file:D:/_dev_ssd/databases_demo/pedidoDB;mode=PostgreSQL;AUTO_SERVER=TRUE
+        username: ola
+    h2:
+        console:
+            enabled: true
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        defer-datasource-initialization: true
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true
+    rabbitmq:
+        host: localhost
+        password: guest
+        port: 5672
+        username: guest
+    sql:
+        init:
+            mode: always
+springdoc:
+    swagger-ui:
+        path: /doc

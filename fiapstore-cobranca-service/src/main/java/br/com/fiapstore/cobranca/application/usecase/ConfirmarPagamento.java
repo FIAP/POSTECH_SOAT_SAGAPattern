@@ -5,7 +5,9 @@ import br.com.fiapstore.cobranca.domain.entity.Pagamento;
 import br.com.fiapstore.cobranca.domain.exception.OperacaoInvalidaException;
 import br.com.fiapstore.cobranca.domain.exception.PagamentoNaoEncontradoException;
 import br.com.fiapstore.cobranca.domain.repository.IPagamentoDatabaseAdapter;
+import br.com.fiapstore.cobranca.domain.repository.IPagamentoQueueAdapter;
 import br.com.fiapstore.cobranca.domain.usecase.IConfirmarPagamentoUseCase;
+import br.com.fiapstore.cobranca.infra.messaging.PagamentoQueueAdapterOUT;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,10 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ConfirmarPagamento implements IConfirmarPagamentoUseCase {
 
     private final IPagamentoDatabaseAdapter iPagamentoDatabaseAdapter;
+    private final IPagamentoQueueAdapter pagamentoQueueAdapter;
 
-    public ConfirmarPagamento(IPagamentoDatabaseAdapter iPagamentoDatabaseAdapter) {
+    public ConfirmarPagamento(IPagamentoDatabaseAdapter iPagamentoDatabaseAdapter, IPagamentoQueueAdapter iPagamentoQueueAdapter) {
         this.iPagamentoDatabaseAdapter = iPagamentoDatabaseAdapter;
-
+        this.pagamentoQueueAdapter = iPagamentoQueueAdapter;
     }
 
 
@@ -31,6 +34,8 @@ public class ConfirmarPagamento implements IConfirmarPagamentoUseCase {
         pagamento.confirmar();
 
         pagamento = this.iPagamentoDatabaseAdapter.save(pagamento);
+
+        this.pagamentoQueueAdapter.publishPagamentoConfirmado(PagamentoQueueAdapterOUT.toMessage(pagamento));
 
         return PagamentoDto.toPagamentoDto(pagamento);
     }

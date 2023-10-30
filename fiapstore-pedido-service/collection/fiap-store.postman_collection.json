@@ -1,0 +1,32 @@
+{
+	"info": {
+		"_postman_id": "2755707a-37a2-4652-8a7e-224ae191448a",
+		"name": "fiap-store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2058496"
+	},
+	"item": [
+		{
+			"name": "confirmar-pagamento",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8082/api/pagamento/confirmar/c92d0af9-54f6-41b9-8a92-6845d50933a8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"pagamento",
+						"confirmar",
+						"c92d0af9-54f6-41b9-8a92-6845d50933a8"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

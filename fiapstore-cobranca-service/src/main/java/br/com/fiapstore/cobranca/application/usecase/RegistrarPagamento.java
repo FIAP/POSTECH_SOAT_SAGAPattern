@@ -3,7 +3,9 @@ package br.com.fiapstore.cobranca.application.usecase;
 import br.com.fiapstore.cobranca.application.dto.PagamentoDto;
 import br.com.fiapstore.cobranca.domain.entity.Pagamento;
 import br.com.fiapstore.cobranca.domain.repository.IPagamentoDatabaseAdapter;
+import br.com.fiapstore.cobranca.domain.repository.IPagamentoQueueAdapter;
 import br.com.fiapstore.cobranca.domain.usecase.IRegistrarPagamentoUseCase;
+import br.com.fiapstore.cobranca.infra.messaging.PagamentoQueueAdapterOUT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,16 +15,18 @@ public class RegistrarPagamento implements IRegistrarPagamentoUseCase {
 
 
     private final IPagamentoDatabaseAdapter iPagamentoDatabaseAdapter;
+    private final IPagamentoQueueAdapter pagamentoQueueAdapter;
     @Autowired
-    public RegistrarPagamento(IPagamentoDatabaseAdapter iPagamentoDatabaseAdapter){
+    public RegistrarPagamento(IPagamentoDatabaseAdapter iPagamentoDatabaseAdapter, IPagamentoQueueAdapter pagamentoQueueAdapter){
         this.iPagamentoDatabaseAdapter = iPagamentoDatabaseAdapter;
-
+        this.pagamentoQueueAdapter = pagamentoQueueAdapter;
     }
     @Transactional
     public PagamentoDto executar(PagamentoDto pagamentoDto) {
 
         Pagamento pagamento = new Pagamento(pagamentoDto.getCodigoPedido(), pagamentoDto.getValor(), pagamentoDto.getPercentualDesconto(), pagamentoDto.getCpf());
         pagamento = iPagamentoDatabaseAdapter.save(pagamento);
+        pagamentoQueueAdapter.publishAtualizacaoPagamento(PagamentoQueueAdapterOUT.toMessage(pagamento));
         return PagamentoDto.toPagamentoDto(pagamento);
     }
 

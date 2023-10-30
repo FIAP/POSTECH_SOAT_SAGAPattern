@@ -9,6 +9,7 @@ import br.com.fiapstore.pedido.domain.exception.CupomExpiradoException;
 import br.com.fiapstore.pedido.domain.exception.CupomInvalidoException;
 import br.com.fiapstore.pedido.domain.exception.ProdutoNaoEncontradoException;
 import br.com.fiapstore.pedido.domain.repository.IPedidoDatabaseAdapter;
+import br.com.fiapstore.pedido.domain.repository.IPedidoQueueAdapterOUT;
 import br.com.fiapstore.pedido.domain.repository.IProdutoDatabaseAdapter;
 import br.com.fiapstore.pedido.domain.usecase.RegistrarPedidoUseCase;
 import com.google.gson.Gson;
@@ -24,13 +25,15 @@ public class RegistrarPedido implements RegistrarPedidoUseCase {
 
     private final IPedidoDatabaseAdapter pedidoDatabaseAdapter;
     private final IProdutoDatabaseAdapter produtoDatabaseAdapter;
+    private final IPedidoQueueAdapterOUT pedidoQueueAdapter;
 
     @Autowired
     private Gson gson;
 
-    public RegistrarPedido(IPedidoDatabaseAdapter pedidoDatabaseAdapter, IProdutoDatabaseAdapter produtoDatabaseAdapter) {
+    public RegistrarPedido(IPedidoDatabaseAdapter pedidoDatabaseAdapter, IPedidoQueueAdapterOUT pedidoQueueAdapter, IProdutoDatabaseAdapter produtoDatabaseAdapter) {
         this.pedidoDatabaseAdapter = pedidoDatabaseAdapter;
-         this.produtoDatabaseAdapter = produtoDatabaseAdapter;
+        this.pedidoQueueAdapter = pedidoQueueAdapter;
+        this.produtoDatabaseAdapter = produtoDatabaseAdapter;
     }
 
     @Transactional
@@ -46,6 +49,8 @@ public class RegistrarPedido implements RegistrarPedidoUseCase {
         pedido.aplicarDesconto(cupomDesconto);
 
         Pedido pedidoSalvo  =pedidoDatabaseAdapter.save(pedido);
+
+        pedidoQueueAdapter.publish(toMessage(pedido));
 
         return toPedidoDto(pedidoSalvo);
     }
@@ -65,12 +70,14 @@ public class RegistrarPedido implements RegistrarPedidoUseCase {
 
     }
 
-    private String toPedidoMessage(Pedido pedido){
+    public static String toMessage(Pedido pedido){
         Map message = new HashMap<String, String>();
+        message.put("tipoOperacao", "atualizacaoPedido");
         message.put("codigoPedido",pedido.getCodigoPedido());
         message.put("precoTotal",pedido.calcularPrecoTotal());
         message.put("percentualDesconto",pedido.getCupomDesconto().getPercentual());
         message.put("cpf",pedido.getCpf());
-        return gson.toJson(message);
+        message.put("statusPedido",pedido.getStatusPedido());
+        return new Gson().toJson(message);
     }
 }

@@ -54,6 +54,7 @@ class PedidoControllerTest {
                 .andExpect(status().is2xxSuccessful());
 
     }
+
     @Test
     void deveCancelarUmPedido() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders

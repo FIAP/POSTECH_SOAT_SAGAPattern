@@ -1,9 +1,9 @@
-## POSTECH_SOAT_SAGAPattern
+## POSTECH_SOAT_SAGAPATTERN
 
-### Servições que fazem parte da solução:
-* fiap-store-pedido-service
-* fiap-store-pagamento-service-
-* fiap-store-entrega-service
+### Serviços que fazem parte da solução:
+* fiapstore-pedido-service
+* fiapstore-cobranca-service-
+* fiapstore-entrega-service
 
 ### Tecnologias utilizadas
 * Linguagem: Java

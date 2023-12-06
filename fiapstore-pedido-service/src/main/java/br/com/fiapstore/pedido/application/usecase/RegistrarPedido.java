@@ -33,7 +33,7 @@ public class RegistrarPedido implements RegistrarPedidoUseCase {
          this.produtoDatabaseAdapter = produtoDatabaseAdapter;
     }
 
-    @Transactional
+
     public PedidoDto executar(PedidoDto pedidoDto) throws CupomExpiradoException, CupomInvalidoException, ProdutoNaoEncontradoException {
 
         Produto produto = produtoDatabaseAdapter.findById(pedidoDto.getCodigoProduto());

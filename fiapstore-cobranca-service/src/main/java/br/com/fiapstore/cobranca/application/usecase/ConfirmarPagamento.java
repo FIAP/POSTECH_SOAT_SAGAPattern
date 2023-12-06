@@ -20,7 +20,6 @@ public class ConfirmarPagamento implements IConfirmarPagamentoUseCase {
     }
 
 
-    @Transactional
     public PagamentoDto executar(String codigoPagamento) throws PagamentoNaoEncontradoException, OperacaoInvalidaException {
         Pagamento pagamento = null;
 

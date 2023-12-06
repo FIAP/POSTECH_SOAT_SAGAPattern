@@ -18,7 +18,6 @@ public class RegistrarPagamento implements IRegistrarPagamentoUseCase {
         this.iPagamentoDatabaseAdapter = iPagamentoDatabaseAdapter;
 
     }
-    @Transactional
     public PagamentoDto executar(PagamentoDto pagamentoDto) {
 
         Pagamento pagamento = new Pagamento(pagamentoDto.getCodigoPedido(), pagamentoDto.getValor(), pagamentoDto.getPercentualDesconto(), pagamentoDto.getCpf());
